@@ -1,0 +1,57 @@
+networks:
+    laravel:
+        driver: bridge
+
+services:
+    app:
+        build:
+            args:
+                user: user
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: laravel-test
+        container_name: laravel-app
+        restart: always
+        working_dir: /home/user/laravel/
+        volumes:
+            - ./:/home/user/laravel
+        depends_on:
+            - db
+        networks:
+            - laravel
+    nginx:
+        image: nginx:alpine
+        container_name: laravel-nginx
+        restart: unless-stopped
+        ports:
+            - 8000:80
+        volumes:
+            - ./:/home/user/laravel/
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+            - ./logs/nginx:/var/log/nginx
+        networks:
+            - laravel
+    db:
+        image: mariadb
+        container_name: laravel-db
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        ports:
+            - "3306:3306"
+        networks:
+            - laravel
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+        - 8080:8080
+        networks:
+            - laravel
