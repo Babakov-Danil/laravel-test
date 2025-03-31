@@ -1,12 +1,19 @@
 ## Startup
-
-    docker compose build
-
-    docker compose up -d
-
-    docker exec -it laravel-app sh
+```
+docker compose build
+```
+```
+docker compose up -d
+```
+```
+docker exec -it laravel-app sh
+```
+```
+./startup.sh
+```
     
-    ./startup.sh
+    
+    
 
 ## URLS
 [/](http://localhost:8000/)
